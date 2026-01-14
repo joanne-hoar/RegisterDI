@@ -1,9 +1,9 @@
 namespace RegisterDI;
 
-public class EmailSender
+public class EmailSender : IEmailSender
 {
     public string SendMail(string username)
     {
-        return $"{username}, we sent you mail!";
+        return $"[REAL] Welcome, {username}! An email has been sent.";
     }
 }

@@ -1,5 +1,3 @@
-
-
 using Swashbuckle.AspNetCore.SwaggerGen;
 
 namespace RegisterDI;
@@ -12,9 +10,16 @@ public class Program
 
         // Add services to the container.
         builder.Services.AddAuthorization();
-        // Register EmailSender for dependency injection. 
-        // AddTransient creates a new instance each time it's requested.
-        builder.Services.AddTransient<EmailSender>();
+        // Register IEmailSender for dependency injection.
+        // Use MockEmailSender in Development, EmailSender in Production/other.
+        if (builder.Environment.IsDevelopment())
+        {
+            builder.Services.AddTransient<IEmailSender, MockEmailSender>();
+        }
+        else
+        {
+            builder.Services.AddTransient<IEmailSender, EmailSender>();
+        }
 
         // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
         builder.Services.AddEndpointsApiExplorer();
@@ -39,12 +44,12 @@ public class Program
         {
             var emailSender = new EmailSender();
             emailSender.SendMail(username);
-            return emailSender.SendMail(username);
+            return $"Welcome, {username}! An email has been sent WITHOUT dependency injection.";
         });
 
-        // Endpoint WITH dependency injection: EmailSender is injected by ASP.NET Core's DI container.
-        // The framework automatically provides an EmailSender instance when this endpoint is called.
-        app.MapGet("/register/DI/{username}", (string username, EmailSender emailSender) =>
+         // Endpoint WITH dependency injection: IEmailSender is injected by ASP.NET Core's DI container.
+        // The implementation (real or mock) is chosen based on the environment.
+        app.MapGet("/register/DI/{username}", (string username, IEmailSender emailSender) =>
         {
             return emailSender.SendMail(username);
         });
@@ -52,6 +57,9 @@ public class Program
         // Root endpoint returns a greeting message
         app.MapGet("/", () => "Welcome to ASP.Net Core");
 
+        // Log the current ASP.NET Core environment to the console for debugging purposes
+        Console.WriteLine($"ASPNETCORE_ENVIRONMENT: {builder.Environment.EnvironmentName}");
+        
         app.Run();
     }
 }
