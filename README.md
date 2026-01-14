@@ -5,7 +5,7 @@ This project demonstrates the basics and power of Dependency Injection (DI) in A
 **Author:** Joanne
 
 **Acknowledgements:**
-This project was developed, documented, and troubleshooted with the assistance of GitHub Copilot (GPT-4.1 AI).
+This project was developed, documented, and troubleshot with the assistance of GitHub Copilot (GPT-4.1 AI).
 
 ## Purpose
 
