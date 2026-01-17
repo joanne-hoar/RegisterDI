@@ -22,6 +22,8 @@ The goal of this project is to show how ASP.NET Core's built-in DI container can
 ## How to Run
 1. Restore dependencies:
    ```sh
+
+
    dotnet restore
    ```
 2. Build the project:
@@ -49,8 +51,10 @@ Open your browser to the Swagger UI to test the endpoints.
 
 > **Swagger UI Access:**
 >
+
 > After running the project, you can access the Swagger UI at:
 >
+
 > - [https://localhost:7165/swagger](https://localhost:7165/swagger)
 > - [http://localhost:5224/swagger](http://localhost:5224/swagger)
 >
@@ -77,6 +81,45 @@ You can change the environment by setting the `ASPNETCORE_ENVIRONMENT` variable 
 To test the application's behavior using different profiles or environment variables, you can use the `launchSettings.json` file located in the `Properties` folder. This file allows you to configure how the application is launched, including environment variables, command-line arguments, and profiles for development and production.
 
 Observe the difference in the response from `/register/DI/{username}` to see DI in action!
+
+## EFCore Branch
+
+This branch adds Entity Framework Core integration and SQL Server support. It demonstrates:
+
+- User and StudyGroup data models
+- Many-to-many relationship between users and study groups
+- Database-backed endpoints for user and study group management
+- Usage of ASP.NET Core Dependency Injection for DbContext
+
+### Endpoints
+- `POST /register` — Add a new user (name, email)
+- `GET /users` — List all users
+- `POST /studygroups` — Create a new study group (topic)
+- `POST /studygroups/{studyGroupId}/join/{userId}` — Add a user to a study group
+
+### Database Setup
+1. Update your connection string in `appsettings.json` to match your SQL Server instance:
+   ```json
+   "ConnectionStrings": {
+     "DefaultConnection": "Server=localhost;Database=RegisterDIDb;Trusted_Connection=True;MultipleActiveResultSets=true"
+   }
+   ```
+2. Add and apply migrations:
+   ```sh
+   dotnet ef migrations add InitialCreate
+   dotnet ef database update
+   ```
+3. Run the app:
+   ```sh
+   dotnet run
+   ```
+
+### Viewing Data
+You can view and manage your database using SQL Server Management Studio (SSMS). Connect to your server and look for the `RegisterDIDb` database.
+
+### Notes
+- All files in the `Migrations` folder should be committed to source control.
+- The app uses DI for `AppDbContext` and other services.
 
 ---
 
